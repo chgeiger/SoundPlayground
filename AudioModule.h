@@ -16,6 +16,9 @@ public:
 	const QVector<AudioPort*>& getInputPorts() const { return m_inputs; }
 	const QVector<AudioPort*>& getOutputPorts() const { return m_outputs; }
 
+	// Bring this module to the top of the Z-order stack
+	void raiseToTop();
+
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
@@ -29,6 +32,8 @@ private:
 	QVector<AudioPort*> m_inputs;
 	QVector<AudioPort*> m_outputs;
 	bool m_isDragging = false;
+
+	static qreal s_maxZValue;
 
 	static constexpr qreal MODULE_WIDTH = 120.0;
 	static constexpr qreal MODULE_HEIGHT = 200.0;

@@ -4,6 +4,9 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QFont>
 
+// Initialize static variable
+qreal AudioModule::s_maxZValue = 0.0;
+
 AudioModule::AudioModule(const QString &name, int numInputs, int numOutputs, QGraphicsItem *parent)
 	: QGraphicsRectItem(0, 0, MODULE_WIDTH, MODULE_HEIGHT, parent)
 	, m_name(name)
@@ -49,9 +52,17 @@ void AudioModule::layoutPorts()
 	}
 }
 
+void AudioModule::raiseToTop()
+{
+	s_maxZValue += 1.0;
+	setZValue(s_maxZValue);
+}
+
 void AudioModule::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	m_isDragging = true;
+	// Bring to top of Z-order stack
+	raiseToTop();
 	QGraphicsRectItem::mousePressEvent(event);
 }
 
