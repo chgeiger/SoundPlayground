@@ -9,6 +9,8 @@ enum class PortType {
 	Output
 };
 
+class CustomGraphicsScene;
+
 class AudioPort : public QGraphicsEllipseItem {
 public:
 	AudioPort(const QString &name, PortType type, QGraphicsItem *parent = nullptr);

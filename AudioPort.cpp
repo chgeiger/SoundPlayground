@@ -1,9 +1,8 @@
 #include "AudioPort.h"
+#include "CustomGraphicsScene.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QPen>
 #include <QBrush>
-#include <QGraphicsScene>
-#include <QGraphicsLineItem>
 
 AudioPort::AudioPort(const QString &name, PortType type, QGraphicsItem *parent)
 	: QGraphicsEllipseItem(-PORT_RADIUS, -PORT_RADIUS, PORT_RADIUS * 2, PORT_RADIUS * 2, parent)
@@ -28,8 +27,15 @@ QPointF AudioPort::getConnectionPoint() const
 void AudioPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	m_isDragging = true;
-	QGraphicsEllipseItem::mousePressEvent(event);
 	setSelected(true);
+	
+	// Tell CustomGraphicsScene to start drag connection
+	CustomGraphicsScene *customScene = dynamic_cast<CustomGraphicsScene*>(scene());
+	if (customScene) {
+		customScene->startDragConnection(this, event->scenePos());
+	}
+	
+	QGraphicsEllipseItem::mousePressEvent(event);
 }
 
 void AudioPort::mouseMoveEvent(QGraphicsSceneMouseEvent *event)

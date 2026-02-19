@@ -30,7 +30,9 @@ add_executable(${PROJECT_NAME}
 	AudioPort.h
 	AudioPort.cpp
 	AudioConnection.h
-	AudioConnection.cpp)
+	AudioConnection.cpp
+	CustomGraphicsScene.h
+	CustomGraphicsScene.cpp)
 
 # Link Qt6 libraries
 target_link_libraries(${PROJECT_NAME} PUBLIC

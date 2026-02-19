@@ -3,9 +3,9 @@
 
 #include <QMainWindow>
 #include <QGraphicsView>
-#include <QGraphicsScene>
 #include <QVector>
 
+class CustomGraphicsScene;
 class AudioConnection;
 
 class MainWindow : public QMainWindow {
@@ -17,7 +17,7 @@ public:
 
 private:
 	QGraphicsView *graphicsView;
-	QGraphicsScene *scene;
+	CustomGraphicsScene *scene;
 	QVector<AudioConnection*> m_connections;
 	
 	void setupModules();

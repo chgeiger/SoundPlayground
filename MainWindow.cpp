@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "CustomGraphicsScene.h"
 #include "AudioModule.h"
 #include "AudioConnection.h"
 #include <QGraphicsTextItem>
@@ -11,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
 	setGeometry(100, 100, 800, 600);
 
 	// Create graphics scene and view
-	scene = new QGraphicsScene(this);
+	scene = new CustomGraphicsScene(this);
 	graphicsView = new QGraphicsView(scene, this);
 	setCentralWidget(graphicsView);
 
