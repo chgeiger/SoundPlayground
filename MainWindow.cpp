@@ -2,6 +2,7 @@
 #include "CustomGraphicsScene.h"
 #include "AudioModule.h"
 #include "SinusGeneratorModule.h"
+#include "AudioOutModule.h"
 #include "AudioConnection.h"
 #include <QGraphicsTextItem>
 #include <QFont>
@@ -46,6 +47,10 @@ void MainWindow::setupModules()
 	AudioModule *ampModule = new AudioModule("Amplifier", 1, 1);
 	ampModule->setPos(450, 50);
 	scene->addItem(ampModule);
+
+	AudioOutModule *audioOutModule = new AudioOutModule();
+	audioOutModule->setPos(650, 50);
+	scene->addItem(audioOutModule);
 }
 
 void MainWindow::setupConnections()
