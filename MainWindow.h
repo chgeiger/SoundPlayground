@@ -15,6 +15,7 @@ public:
 private:
 	QGraphicsView *graphicsView;
 	QGraphicsScene *scene;
+	void setupModules();
 };
 
 #endif // MAINWINDOW_H

@@ -24,7 +24,11 @@ configure_file(config.h.in config.h)
 add_executable(${PROJECT_NAME}
 	SoundPlayground.cpp
 	MainWindow.h
-	MainWindow.cpp)
+	MainWindow.cpp
+	AudioModule.h
+	AudioModule.cpp
+	AudioPort.h
+	AudioPort.cpp)
 
 # Link Qt6 libraries
 target_link_libraries(${PROJECT_NAME} PUBLIC

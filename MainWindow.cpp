@@ -1,7 +1,6 @@
 #include "MainWindow.h"
-#include <QGraphicsEllipseItem>
+#include "AudioModule.h"
 #include <QGraphicsTextItem>
-#include <QPen>
 #include <QFont>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -19,19 +18,26 @@ MainWindow::MainWindow(QWidget *parent)
 	scene->setSceneRect(0, 0, 800, 600);
 	scene->setBackgroundBrush(Qt::white);
 
-	// Add a sample ellipse
-	QGraphicsEllipseItem *ellipse = scene->addEllipse(100, 100, 200, 200);
-	ellipse->setBrush(Qt::blue);
-	ellipse->setPen(QPen(Qt::darkBlue, 2));
-
-	// Add a text item
-	QGraphicsTextItem *text = scene->addText("SoundPlayground");
-	text->setPos(250, 50);
-	QFont font = text->font();
-	font.setPointSize(20);
-	text->setFont(font);
+	// Setup audio modules
+	setupModules();
 }
 
 MainWindow::~MainWindow()
 {
+}
+
+void MainWindow::setupModules()
+{
+	// Create test modules
+	AudioModule *oscModule = new AudioModule("Oscillator", 0, 2);
+	oscModule->setPos(50, 50);
+	scene->addItem(oscModule);
+
+	AudioModule *filterModule = new AudioModule("Filter", 2, 1);
+	filterModule->setPos(250, 50);
+	scene->addItem(filterModule);
+
+	AudioModule *ampModule = new AudioModule("Amplifier", 1, 1);
+	ampModule->setPos(450, 50);
+	scene->addItem(ampModule);
 }
