@@ -1,0 +1,40 @@
+# Build directories
+/build/
+cmake-build-*/
+out/
+
+# CMake generated files
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+CMakeFiles/
+
+# Compiled objects
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+
+# IDE and editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.user
+
+# Generated files
+config.h
+detect_compiler_builtins.cpp
+compile_commands.json
+
+# Ninja build system
+build.ninja
+.ninja_deps
+.ninja_log
