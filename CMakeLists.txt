@@ -5,6 +5,9 @@ project (SoundPlayground
 	VERSION 0.1
 	DESCRIPTION "A Sound Playground with Qt6 Graphics")
 
+# Export compile_commands.json for IDEs (clangd, VS Code, etc.)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
