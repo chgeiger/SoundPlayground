@@ -11,6 +11,9 @@ class QPainter;
 class QStyleOptionGraphicsItem;
 class QWidget;
 
+// GUI-/Graph-Knoten für den Audioausgang.
+// Verknüpft einen Eingangsknoten (z.B. SinusGeneratorModule) mit AudioOutModel,
+// zeigt aktuelle Parameter/Status an und reagiert auf Benutzerinteraktion.
 class AudioOutModule : public AudioModule {
 public:
 	AudioOutModule(QGraphicsItem *parent = nullptr);

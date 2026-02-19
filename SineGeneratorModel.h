@@ -4,6 +4,9 @@
 #include <QtGlobal>
 #include <mutex>
 
+// Reine DSP-/Zustandsklasse für den Sinusgenerator.
+// Enthält keine Qt-GUI-Abhängigkeiten und kann unabhängig getestet werden.
+// SinusGeneratorModule nutzt diese Klasse nur als Backend.
 class SineGeneratorModel {
 public:
 	explicit SineGeneratorModel(qreal sampleRate = 44100.0);

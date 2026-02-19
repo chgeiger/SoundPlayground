@@ -10,6 +10,9 @@
 #include <portaudio.h>
 #endif
 
+// Modellklasse für den Audioausgang.
+// Kapselt PortAudio-Lebenszyklus, Gain, Status und die Samplequelle
+// über einen Callback. Hat keine QGraphics-Abhängigkeiten.
 class AudioOutModel {
 public:
 	using SampleProvider = std::function<float()>;
