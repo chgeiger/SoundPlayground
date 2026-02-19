@@ -19,6 +19,10 @@ public:
 	qreal nextSample();
 	void resetPhase();
 
+protected:
+	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
 private:
 	qreal m_frequencyHz = 440.0;
 	qreal m_amplitude = 0.8;
