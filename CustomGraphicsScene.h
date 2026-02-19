@@ -20,6 +20,7 @@ public:
 protected:
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+	void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
 	void onPortPressed(AudioPort *port);
@@ -29,6 +30,7 @@ private:
 	void endDragConnection(const QPointF &endPos);
 	void createConnection(AudioPort *fromPort, AudioPort *toPort);
 	AudioPort* getPortAtPos(const QPointF &pos);
+	void deleteSelected();
 
 	AudioPort *m_draggingPort = nullptr;
 	QGraphicsLineItem *m_dragLine = nullptr;

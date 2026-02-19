@@ -1,7 +1,9 @@
 #include "CustomGraphicsScene.h"
 #include "AudioPort.h"
 #include "AudioConnection.h"
+#include "AudioModule.h"
 #include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 #include <QPen>
 
 CustomGraphicsScene::CustomGraphicsScene(QObject *parent)
@@ -102,4 +104,65 @@ void CustomGraphicsScene::onPortPressed(AudioPort *port)
 {
 	// This slot would be called when a port is pressed
 	// For now, we handle it in AudioPort's mousePressEvent
+}
+
+void CustomGraphicsScene::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Delete || event->key() == Qt::Key_Backspace) {
+		deleteSelected();
+		event->accept();
+	} else {
+		QGraphicsScene::keyPressEvent(event);
+	}
+}
+
+void CustomGraphicsScene::deleteSelected()
+{
+	QList<QGraphicsItem*> selected = selectedItems();
+	
+	for (QGraphicsItem *item : selected) {
+		// Check if it's an AudioModule
+		AudioModule *module = dynamic_cast<AudioModule*>(item);
+		if (module) {
+			// Find and delete all connections to/from this module's ports
+			QList<QGraphicsItem*> allItems = items();
+			for (QGraphicsItem *sceneItem : allItems) {
+				AudioConnection *conn = dynamic_cast<AudioConnection*>(sceneItem);
+				if (conn) {
+					// Check if connection is connected to any port of this module
+					bool deleteConnection = false;
+					for (AudioPort *port : module->getInputPorts()) {
+						if (conn->getFromPort() == port || conn->getToPort() == port) {
+							deleteConnection = true;
+							break;
+						}
+					}
+					if (!deleteConnection) {
+						for (AudioPort *port : module->getOutputPorts()) {
+							if (conn->getFromPort() == port || conn->getToPort() == port) {
+								deleteConnection = true;
+								break;
+							}
+						}
+					}
+					if (deleteConnection) {
+						removeItem(conn);
+						delete conn;
+					}
+				}
+			}
+			// Delete the module
+			removeItem(module);
+			delete module;
+			continue;
+		}
+		
+		// Check if it's an AudioConnection
+		AudioConnection *connection = dynamic_cast<AudioConnection*>(item);
+		if (connection) {
+			removeItem(connection);
+			delete connection;
+			continue;
+		}
+	}
 }
