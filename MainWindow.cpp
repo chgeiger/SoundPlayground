@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "AudioModule.h"
+#include "AudioConnection.h"
 #include <QGraphicsTextItem>
 #include <QFont>
 
@@ -20,6 +21,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// Setup audio modules
 	setupModules();
+	
+	// Setup test connections
+	setupConnections();
 }
 
 MainWindow::~MainWindow()
@@ -40,4 +44,10 @@ void MainWindow::setupModules()
 	AudioModule *ampModule = new AudioModule("Amplifier", 1, 1);
 	ampModule->setPos(450, 50);
 	scene->addItem(ampModule);
+}
+
+void MainWindow::setupConnections()
+{
+	// This will be expanded later for dynamic connections
+	// For now, we'll add test connections when modules are clicked
 }

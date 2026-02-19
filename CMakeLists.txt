@@ -28,7 +28,9 @@ add_executable(${PROJECT_NAME}
 	AudioModule.h
 	AudioModule.cpp
 	AudioPort.h
-	AudioPort.cpp)
+	AudioPort.cpp
+	AudioConnection.h
+	AudioConnection.cpp)
 
 # Link Qt6 libraries
 target_link_libraries(${PROJECT_NAME} PUBLIC

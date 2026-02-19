@@ -2,6 +2,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPen>
 #include <QBrush>
+#include <QGraphicsScene>
+#include <QGraphicsLineItem>
 
 AudioPort::AudioPort(const QString &name, PortType type, QGraphicsItem *parent)
 	: QGraphicsEllipseItem(-PORT_RADIUS, -PORT_RADIUS, PORT_RADIUS * 2, PORT_RADIUS * 2, parent)
@@ -25,11 +27,24 @@ QPointF AudioPort::getConnectionPoint() const
 
 void AudioPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+	m_isDragging = true;
 	QGraphicsEllipseItem::mousePressEvent(event);
 	setSelected(true);
 }
 
+void AudioPort::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+	if (m_isDragging) {
+		// Visual feedback: change color while dragging
+		setBrush(QBrush(Qt::yellow));
+		QGraphicsEllipseItem::mouseMoveEvent(event);
+	}
+}
+
 void AudioPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+	m_isDragging = false;
+	// Reset color
+	setBrush(QBrush(Qt::green));
 	QGraphicsEllipseItem::mouseReleaseEvent(event);
 }

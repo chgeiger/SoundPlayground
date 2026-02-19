@@ -19,11 +19,13 @@ public:
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
 	QString m_name;
 	PortType m_type;
+	bool m_isDragging = false;
 	static constexpr qreal PORT_RADIUS = 6.0;
 };
 
