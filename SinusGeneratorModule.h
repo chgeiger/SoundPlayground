@@ -2,7 +2,7 @@
 #define SINUSGENERATORMODULE_H
 
 #include "AudioModule.h"
-#include <mutex>
+#include "SineGeneratorModel.h"
 
 class SinusGeneratorModule : public AudioModule {
 public:
@@ -25,11 +25,7 @@ protected:
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 private:
-	qreal m_frequencyHz = 440.0;
-	qreal m_amplitude = 0.8;
-	qreal m_sampleRate = 44100.0;
-	qreal m_phase = 0.0;
-	mutable std::mutex m_audioMutex;
+	SineGeneratorModel m_model;
 };
 
 #endif // SINUSGENERATORMODULE_H

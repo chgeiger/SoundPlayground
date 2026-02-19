@@ -66,6 +66,8 @@ add_executable(${PROJECT_NAME}
 	AudioPort.cpp
 	AudioConnection.h
 	AudioConnection.cpp
+	SineGeneratorModel.h
+	SineGeneratorModel.cpp
 	SinusGeneratorModule.h
 	SinusGeneratorModule.cpp
 	AudioOutModule.h
