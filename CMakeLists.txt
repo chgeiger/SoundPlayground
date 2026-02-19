@@ -31,6 +31,8 @@ add_executable(${PROJECT_NAME}
 	AudioPort.cpp
 	AudioConnection.h
 	AudioConnection.cpp
+	SinusGeneratorModule.h
+	SinusGeneratorModule.cpp
 	CustomGraphicsScene.h
 	CustomGraphicsScene.cpp)
 

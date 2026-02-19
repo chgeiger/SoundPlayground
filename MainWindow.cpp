@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "CustomGraphicsScene.h"
 #include "AudioModule.h"
+#include "SinusGeneratorModule.h"
 #include "AudioConnection.h"
 #include <QGraphicsTextItem>
 #include <QFont>
@@ -34,9 +35,9 @@ MainWindow::~MainWindow()
 void MainWindow::setupModules()
 {
 	// Create test modules
-	AudioModule *oscModule = new AudioModule("Oscillator", 0, 2);
-	oscModule->setPos(50, 50);
-	scene->addItem(oscModule);
+	SinusGeneratorModule *sinusModule = new SinusGeneratorModule();
+	sinusModule->setPos(50, 50);
+	scene->addItem(sinusModule);
 
 	AudioModule *filterModule = new AudioModule("Filter", 2, 1);
 	filterModule->setPos(250, 50);
