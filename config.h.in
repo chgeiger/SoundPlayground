@@ -1,2 +1,3 @@
 #define SoundPlayground_VERSION_MAJOR @SoundPlayground_VERSION_MAJOR@
 #define SoundPlayground_VERSION_MINOR @SoundPlayground_VERSION_MINOR@
+#cmakedefine01 SOUNDPLAYGROUND_HAVE_PORTAUDIO

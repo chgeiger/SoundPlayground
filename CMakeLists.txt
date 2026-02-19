@@ -17,6 +17,38 @@ set(CMAKE_AUTOUIC ON)
 # Find Qt6
 find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
 
+# Try to find PortAudio (preferred: pkg-config, fallback: system paths)
+set(SOUNDPLAYGROUND_HAVE_PORTAUDIO 0)
+set(PORTAUDIO_INCLUDE_DIRS "")
+set(PORTAUDIO_LIBRARIES "")
+
+find_package(PkgConfig QUIET)
+if(PkgConfig_FOUND)
+	pkg_check_modules(PORTAUDIO_PC QUIET portaudio-2.0)
+	if(PORTAUDIO_PC_FOUND)
+		set(SOUNDPLAYGROUND_HAVE_PORTAUDIO 1)
+		set(PORTAUDIO_INCLUDE_DIRS ${PORTAUDIO_PC_INCLUDE_DIRS})
+		set(PORTAUDIO_LIBRARIES ${PORTAUDIO_PC_LINK_LIBRARIES})
+	endif()
+endif()
+
+if(NOT SOUNDPLAYGROUND_HAVE_PORTAUDIO)
+	find_path(PORTAUDIO_INCLUDE_DIR portaudio.h)
+	find_library(PORTAUDIO_LIBRARY NAMES portaudio)
+
+	if(PORTAUDIO_INCLUDE_DIR AND PORTAUDIO_LIBRARY)
+		set(SOUNDPLAYGROUND_HAVE_PORTAUDIO 1)
+		set(PORTAUDIO_INCLUDE_DIRS ${PORTAUDIO_INCLUDE_DIR})
+		set(PORTAUDIO_LIBRARIES ${PORTAUDIO_LIBRARY})
+	endif()
+endif()
+
+if(SOUNDPLAYGROUND_HAVE_PORTAUDIO)
+	message(STATUS "PortAudio gefunden und wird eingebunden")
+else()
+	message(WARNING "PortAudio nicht gefunden. Audio-Out-Funktionen bleiben deaktiviert, bis PortAudio installiert ist.")
+endif()
+
 # Create a simple configuration header
 configure_file(config.h.in config.h)
 
@@ -41,6 +73,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	Qt6::Core
 	Qt6::Gui
 	Qt6::Widgets)
+
+if(SOUNDPLAYGROUND_HAVE_PORTAUDIO)
+	target_include_directories(${PROJECT_NAME} PRIVATE ${PORTAUDIO_INCLUDE_DIRS})
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${PORTAUDIO_LIBRARIES})
+endif()
 
 # Include the configuration header in the build
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_BINARY_DIR}")
