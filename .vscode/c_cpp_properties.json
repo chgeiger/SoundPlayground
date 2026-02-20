@@ -7,8 +7,7 @@
       "compilerPath": "/usr/bin/g++",
       "cppStandard": "c++17",
       "cStandard": "c11",
-      "compileCommands": "${workspaceFolder}/build/compile_commands.json",
-      "configurationProvider": "ms-vscode.cmake-tools"
+      "compileCommands": "${workspaceFolder}/build/compile_commands.json"
     }
   ]
 }
