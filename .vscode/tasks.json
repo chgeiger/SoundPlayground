@@ -4,14 +4,7 @@
     {
       "label": "build (cmake)",
       "type": "shell",
-      "command": "cmake",
-      "args": [
-        "--build",
-        "build",
-        "--config",
-        "Debug",
-        "-j"
-      ],
+      "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j",
       "options": {
         "cwd": "${workspaceFolder}"
       },
