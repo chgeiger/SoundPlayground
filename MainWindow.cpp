@@ -30,6 +30,16 @@ MainWindow::MainWindow(QWidget *parent)
 		graphicsView->centerOn(0, 0);
 	});
 
+	m_audioEngineAction = toolbar->addAction("AudioEngine: AUS");
+	m_audioEngineAction->setCheckable(true);
+	m_audioEngineAction->setChecked(false);
+	connect(m_audioEngineAction, &QAction::toggled, this, [this](bool enabled) {
+		if (m_audioOutModule) {
+			m_audioOutModule->setAudioEngineEnabled(enabled);
+		}
+		m_audioEngineAction->setText(enabled ? "AudioEngine: AN" : "AudioEngine: AUS");
+	});
+
 	// Set scene dimensions
 	scene->setSceneRect(0, 0, 800, 600);
 	scene->setBackgroundBrush(Qt::white);
@@ -60,9 +70,10 @@ void MainWindow::setupModules()
 	ampModule->setPos(450, 50);
 	scene->addItem(ampModule);
 
-	AudioOutModule *audioOutModule = new AudioOutModule();
-	audioOutModule->setPos(650, 50);
-	scene->addItem(audioOutModule);
+	m_audioOutModule = new AudioOutModule();
+	m_audioOutModule->setPos(650, 50);
+	scene->addItem(m_audioOutModule);
+	m_audioOutModule->setAudioEngineEnabled(false);
 }
 
 void MainWindow::setupConnections()

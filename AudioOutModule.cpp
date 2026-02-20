@@ -19,6 +19,22 @@ AudioOutModule::~AudioOutModule()
 	m_model.stop();
 }
 
+void AudioOutModule::setAudioEngineEnabled(bool enabled)
+{
+	if (enabled) {
+		refreshConnectedGenerator();
+		m_model.start();
+	} else {
+		m_model.stop();
+	}
+	update();
+}
+
+bool AudioOutModule::isAudioEngineEnabled() const
+{
+	return m_model.isRunning();
+}
+
 void AudioOutModule::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
 	refreshConnectedGenerator();
@@ -43,14 +59,6 @@ void AudioOutModule::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 	if (dialog.exec() == QDialog::Accepted) {
 		m_model.setOutputGain(gainSpin->value());
-
-#if SOUNDPLAYGROUND_HAVE_PORTAUDIO
-		if (!m_model.isRunning()) {
-			m_model.start();
-		}
-#else
-		// Status wird im Modell gepflegt
-#endif
 		update();
 	}
 
@@ -59,6 +67,8 @@ void AudioOutModule::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void AudioOutModule::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+	refreshConnectedGenerator();
+
 	AudioModule::paint(painter, option, widget);
 
 	const qreal gain = m_model.outputGain();

@@ -19,6 +19,9 @@ public:
 	AudioOutModule(QGraphicsItem *parent = nullptr);
 	~AudioOutModule() override;
 
+	void setAudioEngineEnabled(bool enabled);
+	bool isAudioEngineEnabled() const;
+
 protected:
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
