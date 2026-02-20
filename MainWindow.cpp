@@ -6,6 +6,8 @@
 #include "AudioConnection.h"
 #include <QGraphicsTextItem>
 #include <QFont>
+#include <QToolBar>
+#include <QAction>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -17,6 +19,16 @@ MainWindow::MainWindow(QWidget *parent)
 	scene = new CustomGraphicsScene(this);
 	graphicsView = new QGraphicsView(scene, this);
 	setCentralWidget(graphicsView);
+
+	// Toolbar oberhalb des Views
+	QToolBar *toolbar = addToolBar("Main Toolbar");
+	toolbar->setMovable(false);
+
+	QAction *resetViewAction = toolbar->addAction("Ansicht zurücksetzen");
+	connect(resetViewAction, &QAction::triggered, this, [this]() {
+		graphicsView->resetTransform();
+		graphicsView->centerOn(0, 0);
+	});
 
 	// Set scene dimensions
 	scene->setSceneRect(0, 0, 800, 600);
