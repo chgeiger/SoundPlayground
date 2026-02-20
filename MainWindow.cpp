@@ -8,6 +8,11 @@
 #include <QFont>
 #include <QToolBar>
 #include <QAction>
+#include <QLabel>
+#include <QTimer>
+#include <QFile>
+#include <QTextStream>
+#include <QStringList>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -39,6 +44,16 @@ MainWindow::MainWindow(QWidget *parent)
 		}
 		m_audioEngineAction->setText(enabled ? "AudioEngine: AN" : "AudioEngine: AUS");
 	});
+
+	toolbar->addSeparator();
+	m_cpuUsageLabel = new QLabel("CPU: -- %", this);
+	toolbar->addWidget(m_cpuUsageLabel);
+
+	m_cpuUsageTimer = new QTimer(this);
+	m_cpuUsageTimer->setInterval(1000);
+	connect(m_cpuUsageTimer, &QTimer::timeout, this, &MainWindow::updateCpuUsage);
+	m_cpuUsageTimer->start();
+	updateCpuUsage();
 
 	// Set scene dimensions
 	scene->setSceneRect(0, 0, 800, 600);
@@ -80,4 +95,87 @@ void MainWindow::setupConnections()
 {
 	// This will be expanded later for dynamic connections
 	// For now, we'll add test connections when modules are clicked
+}
+
+void MainWindow::updateCpuUsage()
+{
+	if (!m_cpuUsageLabel) {
+		return;
+	}
+
+	quint64 idle = 0;
+	quint64 total = 0;
+	if (!readCpuStats(idle, total)) {
+		m_cpuUsageLabel->setText("CPU: n/a");
+		return;
+	}
+
+	if (!m_hasCpuSample) {
+		m_prevCpuIdle = idle;
+		m_prevCpuTotal = total;
+		m_hasCpuSample = true;
+		m_cpuUsageLabel->setText("CPU: -- %");
+		return;
+	}
+
+	const quint64 totalDelta = total - m_prevCpuTotal;
+	const quint64 idleDelta = idle - m_prevCpuIdle;
+
+	m_prevCpuIdle = idle;
+	m_prevCpuTotal = total;
+
+	if (totalDelta == 0) {
+		m_cpuUsageLabel->setText("CPU: -- %");
+		return;
+	}
+
+	const double usage = (1.0 - (static_cast<double>(idleDelta) / static_cast<double>(totalDelta))) * 100.0;
+	m_cpuUsageLabel->setText(QString("CPU: %1 %").arg(usage, 0, 'f', 1));
+}
+
+bool MainWindow::readCpuStats(quint64 &idle, quint64 &total) const
+{
+	QFile statFile("/proc/stat");
+	if (!statFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		return false;
+	}
+
+	QTextStream stream(&statFile);
+	const QString firstLine = stream.readLine();
+	if (!firstLine.startsWith("cpu ")) {
+		return false;
+	}
+
+	const QStringList fields = firstLine.simplified().split(' ');
+	if (fields.size() < 5) {
+		return false;
+	}
+
+	total = 0;
+	for (int i = 1; i < fields.size(); ++i) {
+		bool ok = false;
+		const quint64 value = fields[i].toULongLong(&ok);
+		if (!ok) {
+			return false;
+		}
+		total += value;
+	}
+
+	bool idleOk = false;
+	const quint64 idleValue = fields[4].toULongLong(&idleOk);
+	if (!idleOk) {
+		return false;
+	}
+
+	quint64 iowaitValue = 0;
+	if (fields.size() > 5) {
+		bool iowaitOk = false;
+		iowaitValue = fields[5].toULongLong(&iowaitOk);
+		if (!iowaitOk) {
+			return false;
+		}
+	}
+
+	idle = idleValue + iowaitValue;
+	return true;
 }
