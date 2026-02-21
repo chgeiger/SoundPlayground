@@ -20,6 +20,8 @@ public:
 	~MainWindow();
 
 private:
+	static constexpr int PREMIUM_LIMIT_SECONDS = 3600;
+
 	QGraphicsView *graphicsView;
 	CustomGraphicsScene *scene;
 	QVector<AudioConnection*> m_connections;
@@ -30,11 +32,17 @@ private:
 	quint64 m_prevCpuIdle = 0;
 	quint64 m_prevCpuTotal = 0;
 	bool m_hasCpuSample = false;
-	
+	QLabel *m_premiumLabel = nullptr;
+	QTimer *m_premiumTimer = nullptr;
+	int m_premiumSecondsUsed = 0;
+
 	void setupModules();
 	void setupConnections();
 	void updateCpuUsage();
 	bool readCpuStats(quint64 &idle, quint64 &total) const;
+	void updatePremiumLabel();
+	void loadPremiumUsage();
+	void savePremiumUsage() const;
 };
 
 #endif // MAINWINDOW_H

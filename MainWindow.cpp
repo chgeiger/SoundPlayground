@@ -13,6 +13,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QStringList>
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -43,6 +44,11 @@ MainWindow::MainWindow(QWidget *parent)
 			m_audioOutModule->setAudioEngineEnabled(enabled);
 		}
 		m_audioEngineAction->setText(enabled ? "AudioEngine: AN" : "AudioEngine: AUS");
+		if (enabled) {
+			m_premiumTimer->start();
+		} else {
+			m_premiumTimer->stop();
+		}
 	});
 
 	toolbar->addSeparator();
@@ -54,6 +60,26 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(m_cpuUsageTimer, &QTimer::timeout, this, &MainWindow::updateCpuUsage);
 	m_cpuUsageTimer->start();
 	updateCpuUsage();
+
+	// Premium quota label
+	toolbar->addSeparator();
+	loadPremiumUsage();
+	m_premiumLabel = new QLabel(this);
+
+	m_premiumTimer = new QTimer(this);
+	m_premiumTimer->setInterval(1000);
+	connect(m_premiumTimer, &QTimer::timeout, this, [this]() {
+		if (m_premiumSecondsUsed < PREMIUM_LIMIT_SECONDS) {
+			++m_premiumSecondsUsed;
+			if (m_premiumSecondsUsed % 60 == 0) {
+				savePremiumUsage();
+			}
+		}
+		updatePremiumLabel();
+	});
+
+	updatePremiumLabel();
+	toolbar->addWidget(m_premiumLabel);
 
 	// Set scene dimensions
 	scene->setSceneRect(0, 0, 800, 600);
@@ -68,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+	savePremiumUsage();
 }
 
 void MainWindow::setupModules()
@@ -178,4 +205,29 @@ bool MainWindow::readCpuStats(quint64 &idle, quint64 &total) const
 
 	idle = idleValue + iowaitValue;
 	return true;
+}
+
+void MainWindow::updatePremiumLabel()
+{
+	const int used = qMin(m_premiumSecondsUsed, PREMIUM_LIMIT_SECONDS);
+	const int usedMinutes = used / 60;
+	const int limitMinutes = PREMIUM_LIMIT_SECONDS / 60;
+	const double percent = (static_cast<double>(used) / PREMIUM_LIMIT_SECONDS) * 100.0;
+	m_premiumLabel->setText(
+		QString("Premium: %1% (%2/%3 min)")
+			.arg(percent, 0, 'f', 1)
+			.arg(usedMinutes)
+			.arg(limitMinutes));
+}
+
+void MainWindow::loadPremiumUsage()
+{
+	QSettings settings("SoundPlayground", "SoundPlayground");
+	m_premiumSecondsUsed = settings.value("premiumSecondsUsed", 0).toInt();
+}
+
+void MainWindow::savePremiumUsage() const
+{
+	QSettings settings("SoundPlayground", "SoundPlayground");
+	settings.setValue("premiumSecondsUsed", m_premiumSecondsUsed);
 }
